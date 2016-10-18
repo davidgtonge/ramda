@@ -1,6 +1,6 @@
 var _curry2 = require('./internal/_curry2');
+var _isFunction = require('./internal/_isFunction');
 var _slice = require('./internal/_slice');
-
 
 /**
  * Sorts the list according to the supplied function.
@@ -34,10 +34,18 @@ var _slice = require('./internal/_slice');
  *      var people = [clara, bob, alice];
  *      sortByNameCaseInsensitive(people); //=> [alice, bob, clara]
  */
-module.exports = _curry2(function sortBy(fn, list) {
+module.exports = _curry2(function sortBy(fns, list) {
+  if (_isFunction(fns)) {
+    fns = [fns];
+  }
   return _slice(list).sort(function(a, b) {
-    var aa = fn(a);
-    var bb = fn(b);
+    var aa, bb
+    var i = 0
+    while (aa === bb && i < fns.length) {
+      aa = fns[i](a)
+      bb = fns[i](b)
+      i += 1
+    }
     return aa < bb ? -1 : aa > bb ? 1 : 0;
   });
 });
